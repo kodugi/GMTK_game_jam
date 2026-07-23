@@ -11,6 +11,7 @@ namespace RegistrationNameSpace
         [SerializeField] private RegistrationView _registrationView;
         [SerializeField] private DetailsView _detailsView;
         [SerializeField] private PopupView _popupView;
+        [SerializeField] private ClockView _clockView;
         
         private RegistrationManager _registrationManager;
         private TimeManager _timeManager;
@@ -29,6 +30,7 @@ namespace RegistrationNameSpace
             _registrationView.Initialize(_registrationManager);
             _detailsView.Initialize(_registrationManager);
             _popupView.Initialize(_registrationManager);
+            _clockView.Initialize(_timeManager);
         }
 
         private void Update()
@@ -39,9 +41,9 @@ namespace RegistrationNameSpace
         private GameInfo GenerateGameInfo()
         {
             List<Course> courseList = new List<Course>();
-            courseList.Add(new Course(0, 0, CourseType.ESSENTIAL_GE, 10, 5, 5));
-            courseList.Add(new Course(0, 0, CourseType.ESSENTIAL_GE, 10, 20, 5));
-            return new GameInfo(courseList, 0, 0, 21);
+            courseList.Add(new Course(0, "test1", 5, CourseType.ESSENTIAL_GE, 10, 5, 5));
+            courseList.Add(new Course(0, "test2", 5, CourseType.ESSENTIAL_GE, 10, 20, 5));
+            return new GameInfo(courseList, 12 * 3600 + 3 * 60 - 10, 10, 21);
         }
     }
 }

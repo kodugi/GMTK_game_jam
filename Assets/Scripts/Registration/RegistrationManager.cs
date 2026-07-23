@@ -8,6 +8,7 @@ namespace RegistrationNameSpace
     public class RegistrationManager
     {
         public List<Course> CourseList { get; private set; }
+        private List<List<double>> _courseRegistrationTimeList;
         
         private TimeManager _timeManager;
 
@@ -17,20 +18,30 @@ namespace RegistrationNameSpace
 
         public event EventHandler<TryRegisterEventArgs> RaiseTryRegisterEvent;
         
-        private List<Course> _registeredCourses;
+        public List<Course> RegisteredCourses { get; private set; }
         public int SelectedIdx { get; private set; }
 
         public void Initialize(List<Course> courseList, TimeManager timeManager)
         {
             CourseList = courseList;
             _timeManager = timeManager;
-            _registeredCourses = new List<Course>();
+            RegisteredCourses = new List<Course>();
             SelectedIdx = -1;
+            InitializeCourseRegistrationTimeList(courseList);
+        }
+
+        private void InitializeCourseRegistrationTimeList(List<Course> courseList)
+        {
+            _courseRegistrationTimeList = new List<List<double>>();
+            foreach (Course course in courseList)
+            {
+                List<double> registeredStudents = MathUtils.ExtractMultipleLogNormal(GAMMA, MU, SIGMA, course.CurrentQuota);
+                _courseRegistrationTimeList.Add(registeredStudents);
+            }
         }
 
         public void TryRegister(int idx)
         {
-            Debug.Log("try register " + idx);
             if (idx == -1)
             {
                 return;
@@ -44,7 +55,7 @@ namespace RegistrationNameSpace
             
             Course course = CourseList[idx];
             double time = _timeManager.GetPastTime();
-            if (GetRegisteredQuota(course, time) >= course.Quota)
+            if (GetRegisteredQuota(idx, time) >= course.Quota)
             {
                 RaiseTryRegisterEvent?.Invoke(this, new TryRegisterEventArgs(false, RegistrationResultType.FAILURE_QUOTA_EXCEEDED));
                 return;
@@ -56,14 +67,13 @@ namespace RegistrationNameSpace
 
         private void RegisterCourse(Course course)
         {
-            _registeredCourses.Add(course);
-            CourseList.Remove(course);
+            RegisteredCourses.Add(course);
             SelectedIdx = -1;
         }
 
-        private int GetRegisteredQuota(Course course, double elapsedTime)
+        private int GetRegisteredQuota(int idx, double elapsedTime)
         {
-            List<double> registeredStudents = MathUtils.ExtractMultipleLogNormal(GAMMA, MU, SIGMA, course.CurrentQuota);
+            List<double> registeredStudents = _courseRegistrationTimeList[idx];
             int cnt = 0;
             foreach (double d in registeredStudents)
             {
@@ -85,7 +95,7 @@ namespace RegistrationNameSpace
         {
             int sum = 0;
             
-            foreach (Course course in _registeredCourses)
+            foreach (Course course in RegisteredCourses)
             {
                 sum += course.Credits;
             }

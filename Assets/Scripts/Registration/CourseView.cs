@@ -15,9 +15,9 @@ namespace RegistrationNameSpace
 
         public void Initialize(List<Course> courseList, RegistrationManager registrationManager)
         {
-            SpawnCourseEntries(courseList);
             _registrationManager = registrationManager;
             _registrationManager.RaiseTryRegisterEvent += HandleTryRegisterEvent;
+            SpawnCourseEntries(courseList);
         }
 
         public void RefreshCourseList()
@@ -40,6 +40,11 @@ namespace RegistrationNameSpace
             {
                 int idx = i;
                 Course course = courseList[i];
+                if (_registrationManager.RegisteredCourses.Contains(course))
+                {
+                    continue;
+                }
+                
                 GameObject courseEntry = Instantiate(_courseEntryPrefab, _content.transform);
                 courseEntry.GetComponent<CourseEntryView>().Initialize(course);
                 courseEntry.GetComponentInChildren<Toggle>().onValueChanged.AddListener((bool toggled) => HandleCourseEntryClick(idx, toggled));
