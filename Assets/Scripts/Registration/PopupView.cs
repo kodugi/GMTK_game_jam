@@ -4,15 +4,13 @@ using UnityEngine.UI;
 
 namespace RegistrationNameSpace
 {
-    public class PopupView: MonoBehaviour
+    public class PopupView: PopupViewBase
     {
-        [SerializeField] private TextMeshProUGUI _messageText;
-        [SerializeField] private Button _hideButton;
 
         public void Initialize(RegistrationManagerBase registrationManager)
         {
+            base.Initialize();
             registrationManager.RaiseTryRegisterEvent += HandleTryRegisterEvent;
-            _hideButton.onClick.AddListener(HideMessage);
         }
 
         private void HandleTryRegisterEvent(object sender, TryRegisterEventArgs e)
@@ -41,17 +39,6 @@ namespace RegistrationNameSpace
                     ShowMessage("course id overlap");
                     break;
             }
-        }
-        
-        private void ShowMessage(string message)
-        {
-            _messageText.text = message;
-            gameObject.SetActive(true);
-        }
-
-        private void HideMessage()
-        {
-            gameObject.SetActive(false);
         }
     }
 }
