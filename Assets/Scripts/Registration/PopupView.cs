@@ -9,7 +9,7 @@ namespace RegistrationNameSpace
         [SerializeField] private TextMeshProUGUI _messageText;
         [SerializeField] private Button _hideButton;
 
-        public void Initialize(RegistrationManager registrationManager)
+        public void Initialize(RegistrationManagerBase registrationManager)
         {
             registrationManager.RaiseTryRegisterEvent += HandleTryRegisterEvent;
             _hideButton.onClick.AddListener(HideMessage);
@@ -27,6 +27,18 @@ namespace RegistrationNameSpace
                     break;
                 case RegistrationResultType.FAILURE_QUOTA_EXCEEDED:
                     ShowMessage("total quota exceeded");
+                    break;
+                case RegistrationResultType.FAILURE_MAXIMUM_CREDIT_EXCEEDED:
+                    ShowMessage("maximum credits exceeded");
+                    break;
+                case RegistrationResultType.FAILURE_COURSE_NOT_SELECTED:
+                    ShowMessage("please select a course");
+                    break;
+                case RegistrationResultType.FAILURE_TIMETABLE_OVERLAP:
+                    ShowMessage("timetable overlap");
+                    break;
+                case RegistrationResultType.FAILURE_COURSE_ID_OVERLAP:
+                    ShowMessage("course id overlap");
                     break;
             }
         }

@@ -5,9 +5,8 @@ using UnityEngine;
 
 namespace RegistrationNameSpace
 {
-    public class RegistrationManager
+    public class RegistrationManager: RegistrationManagerBase
     {
-        public List<Course> CourseList { get; private set; }
         private List<List<double>> _courseRegistrationTimeList;
         
         private TimeManager _timeManager;
@@ -16,18 +15,11 @@ namespace RegistrationNameSpace
         private readonly double MU = -1.0;
         private readonly double SIGMA = 0.4;
 
-        public event EventHandler<TryRegisterEventArgs> RaiseTryRegisterEvent;
-        
-        public List<Course> RegisteredCourses { get; private set; }
-        public int SelectedIdx { get; private set; }
-
-        public void Initialize(List<Course> courseList, TimeManager timeManager)
+        public void Initialize(GameInfo gameInfo, TimeManager timeManager)
         {
-            CourseList = courseList;
+            base.Initialize(gameInfo);
             _timeManager = timeManager;
-            RegisteredCourses = new List<Course>();
-            SelectedIdx = -1;
-            InitializeCourseRegistrationTimeList(courseList);
+            InitializeCourseRegistrationTimeList(CourseList);
         }
 
         private void InitializeCourseRegistrationTimeList(List<Course> courseList)
@@ -40,35 +32,27 @@ namespace RegistrationNameSpace
             }
         }
 
-        public void TryRegister(int idx)
+        protected override RegistrationResultType GetRegistrationResult(int idx)
         {
-            if (idx == -1)
-            {
-                return;
-            }
-            
             if (!_timeManager.IsPastTime())
             {
-                RaiseTryRegisterEvent?.Invoke(this, new TryRegisterEventArgs(false, RegistrationResultType.FAILURE_BEFORE_START));
-                return;
+                return RegistrationResultType.FAILURE_BEFORE_START;
+            }
+
+            RegistrationResultType result = base.GetRegistrationResult(idx);
+            if (result != RegistrationResultType.SUCCESS)
+            {
+                return result;
             }
             
             Course course = CourseList[idx];
             double time = _timeManager.GetPastTime();
             if (GetRegisteredQuota(idx, time) >= course.Quota)
             {
-                RaiseTryRegisterEvent?.Invoke(this, new TryRegisterEventArgs(false, RegistrationResultType.FAILURE_QUOTA_EXCEEDED));
-                return;
+                return RegistrationResultType.FAILURE_QUOTA_EXCEEDED;
             }
-
-            RegisterCourse(course);
-            RaiseTryRegisterEvent?.Invoke(this, new TryRegisterEventArgs(true, RegistrationResultType.SUCCESS));
-        }
-
-        private void RegisterCourse(Course course)
-        {
-            RegisteredCourses.Add(course);
-            SelectedIdx = -1;
+            
+            return RegistrationResultType.SUCCESS;
         }
 
         private int GetRegisteredQuota(int idx, double elapsedTime)
@@ -85,41 +69,5 @@ namespace RegistrationNameSpace
 
             return cnt;
         }
-        
-        public void SetSelectedIdx(int idx)
-        {
-            SelectedIdx = idx;
-        }
-
-        public int GetTotalCredits()
-        {
-            int sum = 0;
-            
-            foreach (Course course in RegisteredCourses)
-            {
-                sum += course.Credits;
-            }
-
-            return sum;
-        }
-    }
-
-    public class TryRegisterEventArgs : EventArgs
-    {
-        public bool Success { get; private set; }
-        public RegistrationResultType Result { get; private set; }
-        
-        public TryRegisterEventArgs(bool success, RegistrationResultType result)
-        {
-            Success = success;
-            Result = result;
-        }
-    }
-
-    public enum RegistrationResultType
-    {
-        SUCCESS = 0,
-        FAILURE_BEFORE_START = 1,
-        FAILURE_QUOTA_EXCEEDED = 2
     }
 }

@@ -31,8 +31,7 @@ namespace RegistrationNameSpace
 
         private string GetCourseDetails(Course course)
         {
-            return "credits: " + course.Credits + "\t" + "maximum quota: " + course.Quota + "\t" + "current quota: " +
-                   course.CurrentQuota;
+            return "credits: " + course.Credits + "\t" + "quota: " + course.CurrentQuota + "/" + course.Quota;
         }
     }
 }

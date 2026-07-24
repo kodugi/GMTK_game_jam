@@ -7,9 +7,9 @@ namespace RegistrationNameSpace
     {
         [SerializeField] private Button _registerButton;
         
-        private RegistrationManager _registrationManager;
+        private RegistrationManagerBase _registrationManager;
         
-        public void Initialize(RegistrationManager registrationManager)
+        public void Initialize(RegistrationManagerBase registrationManager)
         {
             _registrationManager = registrationManager;
             _registerButton.onClick.AddListener(HandleRegisterButtonClick);

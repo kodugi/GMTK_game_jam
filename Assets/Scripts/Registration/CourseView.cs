@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using CourseNameSpace;
 using UnityEngine;
@@ -11,9 +12,9 @@ namespace RegistrationNameSpace
         [SerializeField] private GameObject _courseEntryPrefab;
 
         private List<GameObject> _courseEntries;
-        private RegistrationManager _registrationManager;
+        private RegistrationManagerBase _registrationManager;
 
-        public void Initialize(List<Course> courseList, RegistrationManager registrationManager)
+        public void Initialize(List<Course> courseList, RegistrationManagerBase registrationManager)
         {
             _registrationManager = registrationManager;
             _registrationManager.RaiseTryRegisterEvent += HandleTryRegisterEvent;
@@ -25,7 +26,12 @@ namespace RegistrationNameSpace
             SpawnCourseEntries(_registrationManager.CourseList);
         }
         
-        private void SpawnCourseEntries(List<Course> courseList)
+        public void RefreshCourseList(Func<Course, bool> filter)
+        {
+            SpawnCourseEntries(_registrationManager.CourseList, filter);
+        }
+
+        private void SpawnCourseEntries(List<Course> courseList, Func<Course, bool> filter)
         {
             if (_courseEntries != null && _courseEntries.Count > 0)
             {
@@ -40,16 +46,21 @@ namespace RegistrationNameSpace
             {
                 int idx = i;
                 Course course = courseList[i];
-                if (_registrationManager.RegisteredCourses.Contains(course))
+                if (!filter(course))
                 {
+                    _courseEntries.Add(null);
                     continue;
                 }
-                
                 GameObject courseEntry = Instantiate(_courseEntryPrefab, _content.transform);
                 courseEntry.GetComponent<CourseEntryView>().Initialize(course);
                 courseEntry.GetComponentInChildren<Toggle>().onValueChanged.AddListener((bool toggled) => HandleCourseEntryClick(idx, toggled));
                 _courseEntries.Add(courseEntry);
             }
+        }
+        
+        private void SpawnCourseEntries(List<Course> courseList)
+        {
+            SpawnCourseEntries(courseList, (Course c) => !_registrationManager.RegisteredCourses.Contains(c));
         }
 
         private void HandleCourseEntryClick(int idx, bool toggled)
@@ -75,7 +86,7 @@ namespace RegistrationNameSpace
 
         private void HandleTryRegisterEvent(object sender, TryRegisterEventArgs e)
         {
-            if (e.Success)
+            if (e.Result == RegistrationResultType.SUCCESS)
             {
                 RefreshCourseList();
             }
