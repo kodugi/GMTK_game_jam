@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace ShopNameSpace
 {
     public class WalletManager
@@ -29,7 +31,7 @@ namespace ShopNameSpace
             }
             
             Points -= item.ItemData.Cost;
-            _detailsView.SetPointsText(Points);
+            _detailsView.SetPointsText();
         }
 
         private void HandleTryPurchaseEvent(object sender, TryPurchaseEventArgs e)

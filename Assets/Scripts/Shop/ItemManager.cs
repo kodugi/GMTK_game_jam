@@ -58,7 +58,6 @@ namespace ShopNameSpace
             PurchaseResultType result = GetPurchaseResult(item);
             if (result == PurchaseResultType.SUCCESS)
             {
-                _walletManager.PurchaseItem(item);
                 item.Purchase(_walletManager);
                 RaiseTryPurchaseEvent?.Invoke(this, new TryPurchaseEventArgs(PurchaseResultType.SUCCESS, item));
             }
@@ -74,7 +73,6 @@ namespace ShopNameSpace
             PurchaseResultType result = GetPurchaseResult(perk);
             if (result == PurchaseResultType.SUCCESS)
             {
-                _walletManager.PurchaseItem(perk);
                 perk.Purchase(_walletManager);
                 PersistentData.PerkList.Add(perk.ItemData);
                 RaiseTryPurchaseEvent?.Invoke(this, new TryPurchaseEventArgs(PurchaseResultType.SUCCESS, perk));

@@ -8,7 +8,7 @@ namespace RegistrationNameSpace
     {
         public List<Course> CourseList { get; set; }
         public double TimeOffset { get; private set; }
-        public double TargetTime{ get; private set; }
+        public double TargetTime { get; private set; }
         public int MaxCredits { get; set; }
         
         public GameInfo(List<Course> courseList, double timeOffset, double targetTime, int maxCredits)

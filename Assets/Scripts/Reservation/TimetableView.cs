@@ -28,6 +28,7 @@ namespace ReservationNameSpace
             _rectTransform = GetComponent<RectTransform>();
             _reservationManager = reservationManager;
             _reservationManager.RaiseTryRegisterEvent += HandleTryRegisterEvent;
+            _reservationManager.RaiseTryRemoveEvent += HandleTryRemoveEvent;
             
             RectTransform timetableColumnGuideRect = _timetableColumnGuide.GetComponent<RectTransform>();
             
@@ -36,7 +37,9 @@ namespace ReservationNameSpace
                 float startPos = GetPositionOnViewport(i, 0, timetableColumnGuideRect);
                 GameObject timetableGuideLabel = Instantiate(_timetableGuideLabel, _timetableColumnGuide.transform);
                 timetableGuideLabel.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -startPos);
-                timetableGuideLabel.GetComponent<TextMeshProUGUI>().text = i.ToString();
+                TextMeshProUGUI text = timetableGuideLabel.GetComponent<TextMeshProUGUI>();
+                text.text = i.ToString();
+                text.color = Color.black;
             }
             
             _timetableColumnViewports = new List<GameObject>();
@@ -52,6 +55,16 @@ namespace ReservationNameSpace
         private void HandleTryRegisterEvent(object sender, TryRegisterEventArgs e)
         {
             if (e.Result != RegistrationResultType.SUCCESS)
+            {
+                return;
+            }
+
+            UpdateTimetable();
+        }
+        
+        private void HandleTryRemoveEvent(object sender, TryRemoveEventArgs e)
+        {
+            if (e.Result != RemoveResultType.SUCCESS)
             {
                 return;
             }
@@ -92,7 +105,6 @@ namespace ReservationNameSpace
         {
             int hourMinute = hour * 60 + minute;
             float ratio = (float)(hourMinute - _startHourMinute) / (float)(_endHourMinute - _startHourMinute);
-            Debug.Log("height: " + timetableColumnViewportRect.rect.height + ", ratio: " + ratio);
             return timetableColumnViewportRect.rect.height * ratio;
         }
     }

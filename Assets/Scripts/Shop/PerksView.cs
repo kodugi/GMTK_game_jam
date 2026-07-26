@@ -13,14 +13,14 @@ namespace ShopNameSpace
         [SerializeField] private List<PerkSpritesDictionaryEntry> _perkSpritesDictionaryEntries;
 
         private List<GameObject> _spawnedPerks;
-        private Dictionary<ItemType, Sprite> _perkSpritesDict = new Dictionary<ItemType, Sprite>();
+        private Dictionary<ItemCode, Sprite> _perkSpritesDict = new Dictionary<ItemCode, Sprite>();
 
         public void Initialize(ItemManager itemManager)
         {
             itemManager.RaiseTryPurchaseEvent += HandleTryPurchaseEvent;
             foreach (PerkSpritesDictionaryEntry entry in _perkSpritesDictionaryEntries)
             {
-                _perkSpritesDict[entry.ItemType] = entry.Sprite;
+                _perkSpritesDict[entry.itemCode] = entry.Sprite;
             }
         }
 
@@ -45,7 +45,8 @@ namespace ShopNameSpace
             foreach (ItemData perkData in PersistentData.PerkList)
             {
                 GameObject perk = Instantiate(_perkPrefab, _perksPanel.transform);
-                perk.GetComponent<Image>().sprite = _perkSpritesDict[perkData.ItemType];
+                _perkSpritesDict.TryGetValue(perkData.ItemCode, out Sprite sp);
+                perk.GetComponent<Image>().sprite = sp;
             }
         }
     }
@@ -53,7 +54,7 @@ namespace ShopNameSpace
     [Serializable]
     public class PerkSpritesDictionaryEntry
     {
-        public ItemType ItemType;
+        public ItemCode itemCode;
         public Sprite Sprite;
     }
 }

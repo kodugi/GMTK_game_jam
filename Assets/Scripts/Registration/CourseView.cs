@@ -10,6 +10,7 @@ namespace RegistrationNameSpace
     {
         [SerializeField] private GameObject _content;
         [SerializeField] private GameObject _courseEntryPrefab;
+        [SerializeField] private HintBoxView _hintBoxView;
 
         private List<GameObject> _courseEntries;
         private RegistrationManagerBase _registrationManager;
@@ -18,6 +19,7 @@ namespace RegistrationNameSpace
         {
             _registrationManager = registrationManager;
             _registrationManager.RaiseTryRegisterEvent += HandleTryRegisterEvent;
+            _registrationManager.RaiseTryRemoveEvent += HandleTryRemoveEvent;
             SpawnCourseEntries(courseList);
         }
 
@@ -52,7 +54,7 @@ namespace RegistrationNameSpace
                     continue;
                 }
                 GameObject courseEntry = Instantiate(_courseEntryPrefab, _content.transform);
-                courseEntry.GetComponent<CourseEntryView>().Initialize(course);
+                courseEntry.GetComponent<CourseEntryView>().Initialize(course, _hintBoxView);
                 courseEntry.GetComponentInChildren<Toggle>().onValueChanged.AddListener((bool toggled) => HandleCourseEntryClick(idx, toggled));
                 _courseEntries.Add(courseEntry);
             }
@@ -89,6 +91,25 @@ namespace RegistrationNameSpace
             if (e.Result == RegistrationResultType.SUCCESS)
             {
                 RefreshCourseList();
+            }
+            else
+            {
+                foreach (GameObject courseEntry in _courseEntries)
+                {
+                    if (courseEntry == null)
+                    {
+                        continue;
+                    }
+                    courseEntry.GetComponentInChildren<Toggle>().SetIsOnWithoutNotify(false);
+                }
+            }
+        }
+
+        private void HandleTryRemoveEvent(object sender, TryRemoveEventArgs e)
+        {
+            if (e.Result == RemoveResultType.SUCCESS)
+            {
+                RefreshCourseList(_registrationManager.RegisteredCourses.Contains);
             }
         }
     }

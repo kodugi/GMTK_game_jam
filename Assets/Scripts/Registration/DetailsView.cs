@@ -1,4 +1,5 @@
 using GameInfoSpace;
+using PersistentDataNameSpace;
 using TMPro;
 using UnityEngine;
 
@@ -15,6 +16,7 @@ namespace RegistrationNameSpace
         {
             _registrationManager = registrationManager;
             _registrationManager.RaiseTryRegisterEvent += HandleTryRegisterEvent;
+            _registrationManager.RaiseTryRemoveEvent += HandleTryRemoveEvent;
             UpdateDetailsText();
         }
 
@@ -26,12 +28,20 @@ namespace RegistrationNameSpace
             }
         }
 
+        private void HandleTryRemoveEvent(object sender, TryRemoveEventArgs e)
+        {
+            if (e.Result == RemoveResultType.SUCCESS)
+            {
+                UpdateDetailsText();
+            }
+        }
+
         private void UpdateDetailsText()
         {
             int totalCredits = _registrationManager.GetTotalCredits();
-            int maxCredits = _gameInfo?.MaxCredits ?? 0;
+            int maxCredits = PersistentData.MaxCredits;
 
-            _detailsText.text = "total credits: " + totalCredits + "/" + "maximum credits: " + maxCredits;
+            _detailsText.text = "total credits: " + totalCredits + " / " + "maximum credits: " + maxCredits;
         }
     }
 }

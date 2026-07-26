@@ -7,6 +7,8 @@ namespace ShopNameSpace
     {
         [SerializeField] private TextMeshProUGUI _itemNameText;
         [SerializeField] private TextMeshProUGUI _itemDescriptionText;
+        [SerializeField] private TextMeshProUGUI _costText;
+        
         private ItemEntry _item;
         
         public void Initialize(ItemEntry item)
@@ -14,6 +16,7 @@ namespace ShopNameSpace
             _item = item;
             _itemNameText.text = _item.ItemData.ItemName;
             _itemDescriptionText.text = _item.ItemData.ItemDescription;
+            _costText.text = _item.ItemData.Cost + " points";
         }
     }
 }

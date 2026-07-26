@@ -1,3 +1,5 @@
+using System;
+
 namespace RegistrationNameSpace
 {
     public class TimeManager
@@ -20,7 +22,7 @@ namespace RegistrationNameSpace
         
         public bool IsPastTime()
         {
-            return _elapsedTime >= _targetTime;
+            return (int)Math.Round(GetRemainingTime()) <= 0;
         }
 
         public double GetPastTime()

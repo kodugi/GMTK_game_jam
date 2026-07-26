@@ -14,8 +14,17 @@ namespace CourseNameSpace
         public DepartmentType department;
         public int quota;
         public float averageQuota;
+        public float stdQuota;
         public float averageRating;
+        public float stdRating;
         public List<PrerequisiteData> prerequisites;
+        public TimetableType timetableType;
+
+        private void Reset()
+        {
+            stdQuota = 0.5f;
+            stdRating = 0.5f;
+        }
     }
 
     [Serializable]
@@ -23,5 +32,12 @@ namespace CourseNameSpace
     {
         public CourseData courseData;
         public float multiplier;
+    }
+
+    public enum TimetableType
+    {
+        NORMAL = 0,
+        SHORT = 1,
+        LONG = 2
     }
 }

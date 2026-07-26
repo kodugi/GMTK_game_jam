@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using CourseNameSpace;
 using GameInfoSpace;
+using PersistentDataNameSpace;
 using UnityEngine;
 
 namespace RegistrationNameSpace
@@ -11,6 +12,7 @@ namespace RegistrationNameSpace
         public List<Course> CourseList { get; protected set; }
 
         public virtual event EventHandler<TryRegisterEventArgs> RaiseTryRegisterEvent;
+        public virtual event EventHandler<TryRemoveEventArgs> RaiseTryRemoveEvent;
         
         public List<Course> RegisteredCourses { get; protected set; }
         public int SelectedIdx { get; protected set; }
@@ -44,7 +46,7 @@ namespace RegistrationNameSpace
             
             Course course = CourseList[idx];
             
-            if (GetTotalCredits() + course.Credits > _gameInfo.MaxCredits)
+            if (GetTotalCredits() + course.Credits > PersistentData.MaxCredits)
             {
                 return RegistrationResultType.FAILURE_MAXIMUM_CREDIT_EXCEEDED;
             }
@@ -66,6 +68,19 @@ namespace RegistrationNameSpace
         {
             RegisteredCourses.Add(course);
             SelectedIdx = -1;
+        }
+
+        public virtual void TryRemove(int idx)
+        {
+            if (idx == -1)
+            {
+                RaiseTryRemoveEvent?.Invoke(this, new TryRemoveEventArgs(RemoveResultType.FAILURE));
+                return;
+            }
+
+            RegisteredCourses.Remove(CourseList[idx]);
+            SelectedIdx = -1;
+            RaiseTryRemoveEvent?.Invoke(this, new TryRemoveEventArgs(RemoveResultType.SUCCESS));
         }
         
         public void SetSelectedIdx(int idx)
@@ -111,12 +126,12 @@ namespace RegistrationNameSpace
                         int otherStartHourMinute = otherTimeTableEntry.StartHour * 60 + otherTimeTableEntry.StartMinute;
                         int otherEndHourMinute = otherTimeTableEntry.EndHour * 60 + otherTimeTableEntry.EndMinute;
 
-                        if (startHourMinute > otherStartHourMinute && startHourMinute < otherEndHourMinute)
+                        if (startHourMinute >= otherStartHourMinute && startHourMinute < otherEndHourMinute)
                         {
                             return true;
                         }
 
-                        if (otherStartHourMinute > startHourMinute && otherStartHourMinute < endHourMinute)
+                        if (otherStartHourMinute >= startHourMinute && otherStartHourMinute < endHourMinute)
                         {
                             return true;
                         }
@@ -160,5 +175,21 @@ namespace RegistrationNameSpace
         FAILURE_COURSE_NOT_SELECTED = 4,
         FAILURE_TIMETABLE_OVERLAP = 5,
         FAILURE_COURSE_ID_OVERLAP = 6
+    }
+
+    public class TryRemoveEventArgs : EventArgs
+    {
+        public RemoveResultType Result { get; private set; }
+
+        public TryRemoveEventArgs(RemoveResultType result)
+        {
+            Result = result;
+        }
+    }
+
+    public enum RemoveResultType
+    {
+        SUCCESS = 0,
+        FAILURE = 1
     }
 }

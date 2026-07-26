@@ -12,6 +12,7 @@ namespace ShopNameSpace
         [SerializeField] private GameObject _perkPanel;
         [SerializeField] private GameObject _itemEntry;
         [SerializeField] private GameObject _perkEntry;
+        [SerializeField] private HintBoxView _hintBoxView;
         
         private ItemManager _itemManager;
 
@@ -21,6 +22,13 @@ namespace ShopNameSpace
         public void Initialize(ItemManager itemManager)
         {
             _itemManager = itemManager;
+            SpawnItemEntries(_itemManager.ItemList);
+            SpawnPerkEntries(_itemManager.PerkList);
+            _itemManager.RaiseTryPurchaseEvent += HandleTryPurchaseEvent;
+        }
+
+        private void Refresh()
+        {
             SpawnItemEntries(_itemManager.ItemList);
             SpawnPerkEntries(_itemManager.PerkList);
         }
@@ -40,6 +48,10 @@ namespace ShopNameSpace
             {
                 int idx = i;
                 ItemEntry item = itemList[i];
+                if (item.IsSoldOut)
+                {
+                    continue;
+                }
 
                 GameObject itemEntry = Instantiate(_itemEntry, _itemPanel.transform);
                 itemEntry.GetComponent<ItemEntryView>().Initialize(item);
@@ -63,9 +75,13 @@ namespace ShopNameSpace
             {
                 int idx = i;
                 ItemEntry perk = perkList[i];
+                if (perk.IsSoldOut)
+                {
+                    continue;
+                }
 
                 GameObject perkEntry = Instantiate(_perkEntry, _perkPanel.transform);
-                perkEntry.GetComponent<PerkEntryView>().Initialize(perk);
+                perkEntry.GetComponent<PerkEntryView>().Initialize(perk, _hintBoxView);
                 perkEntry.GetComponentInChildren<Button>().onClick.AddListener(() => HandlePerkPurchaseButtonClick(idx));
                 _perkEntries.Add(perkEntry);
             }
@@ -79,6 +95,15 @@ namespace ShopNameSpace
         private void HandlePerkPurchaseButtonClick(int idx)
         {
             _itemManager.TryPurchasePerk(idx);
+        }
+
+        private void HandleTryPurchaseEvent(object sender, TryPurchaseEventArgs e)
+        {
+            if (e.Result == PurchaseResultType.SUCCESS)
+            {
+                Refresh();
+                _hintBoxView.Deactivate();
+            }
         }
     }
 }
