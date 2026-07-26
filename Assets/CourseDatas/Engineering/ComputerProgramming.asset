@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3bd54e3d55d14c1ba32365223b71ce9d, type: 3}
+  m_Name: ComputerProgramming
+  m_EditorClassIdentifier: Assembly-CSharp::CourseNameSpace.CourseData
+  courseName: Computer Programming
+  credits: 3
+  courseType: 3
+  department: 4
+  quota: 80
+  averageQuota: 75
+  stdQuota: 15
+  averageRating: 3
+  stdRating: 0.5
+  prerequisites:
+  - courseData: {fileID: 11400000, guid: dc1956aeb4171c04486b86490ac4d0ee, type: 2}
+    multiplier: 1.2
+  timetableType: 2

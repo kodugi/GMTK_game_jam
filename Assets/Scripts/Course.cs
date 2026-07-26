@@ -8,7 +8,6 @@ namespace CourseNameSpace
 {
     public class Course
     {
-        public int CourseID { get; private set; }
         public string CourseName { get; private set; }
         public int Credits { get; private set; }
         public CourseType CourseType { get; private set; }
@@ -19,9 +18,8 @@ namespace CourseNameSpace
         public List<TimetableEntry> Timetable { get; private set; }
         public List<PrerequisiteData> Prerequisites { get; private set; }
 
-        public Course(int courseID, string courseName, int credits, CourseType courseType, DepartmentType department, int quota, int currentQuota, float rating, List<TimetableEntry> timetable = null, List<PrerequisiteData> prerequisites = null)
+        public Course(string courseName, int credits, CourseType courseType, DepartmentType department, int quota, int currentQuota, float rating, List<TimetableEntry> timetable = null, List<PrerequisiteData> prerequisites = null)
         {
-            CourseID = courseID;
             CourseName = courseName;
             Credits = credits;
             CourseType = courseType;
@@ -35,26 +33,51 @@ namespace CourseNameSpace
         
         public string GetDepartmentName()
         {
-            switch (Department)
+            return GetDepartmentName(Department);
+        }
+
+        public static string GetDepartmentName(DepartmentType departmentType)
+        {
+            switch (departmentType)
             {
                 case DepartmentType.HUMAN_LITERATURE:
-                    return "College of Human Literature";
+                    return "Human Literature";
                 case DepartmentType.NATURAL_SCIENCES:
-                    return "College of Natural Sciences";
+                    return "Natural Sciences";
                 case DepartmentType.SOCIAL_SCIENCES:
-                    return "College of Social Sciences";
-                case DepartmentType.EDUCATION:
-                    return "College of Education";
+                    return "Social Sciences";
                 case DepartmentType.ENGINEERING:
-                    return "College of Engineering";
+                    return "Engineering";
                 default:
-                    return "College of Liberal Arts";
+                    return "Liberal Arts";
             }
+        }
+
+        public string GetCourseTypeName()
+        {
+            return GetCourseTypeName(CourseType);
+        }
+
+        public static string GetCourseTypeName(CourseType courseType)
+        {
+            switch (courseType)
+            {
+                case CourseType.ESSENTIAL_GE:
+                    return "Essential GE";
+                case CourseType.NON_ESSENTIAL_GE:
+                    return "Elective GE";
+                case CourseType.ESSENTIAL_MAJOR:
+                    return "Essential Major";
+                case CourseType.NON_ESSENTIAL_MAJOR:
+                    return "Elective Major";
+            }
+
+            return "";
         }
 
         public string GetCourseDetails()
         {
-            string result = "Department: " + GetDepartmentName() + "\n" + "Average Ratings: " + Rating.ToString("F2") + "\n" + "\nPrerequisites";
+            string result = "Department: " + GetDepartmentName() + "\n" + "Course Type: " + GetCourseTypeName() + "\n" + "Average Ratings: " + Rating.ToString("F2") + "\n" + "\nPrerequisites";
             if (Prerequisites == null || Prerequisites.Count == 0)
             {
                 result += ": None";
@@ -73,7 +96,6 @@ namespace CourseNameSpace
         public static Course FromCourseData(CourseData courseData)
         {
             return new Course(
-                courseData.courseID,
                 courseData.courseName,
                 courseData.credits,
                 courseData.courseType,
@@ -98,27 +120,24 @@ namespace CourseNameSpace
 
         private static List<TimetableEntry> GenerateTimetable(TimetableType timetableType)
         {
-            int baseStart = 540, baseEnd = 1260;
-            int entryCount, entryDuration, timetableGap, firstStart, lastStart;
+            int baseStart = 540;
+            int entryDuration, timetableGap, firstStart, lastStart;
 
             switch (timetableType)
             {
                 case TimetableType.SHORT:
-                    entryCount = 1;
                     entryDuration = 50;
                     timetableGap = 60;
                     firstStart = baseStart + 60;
                     lastStart = 1020;
                     break;
                 case TimetableType.LONG:
-                    entryCount = 1;
                     entryDuration = 110;
                     timetableGap = 120;
                     firstStart = baseStart;
                     lastStart = 1020;
                     break;
                 default:
-                    entryCount = 2;
                     entryDuration = 75;
                     timetableGap = 90;
                     firstStart = baseStart + 30;
@@ -172,8 +191,7 @@ namespace CourseNameSpace
         HUMAN_LITERATURE = 1,
         NATURAL_SCIENCES = 2,
         SOCIAL_SCIENCES = 3,
-        EDUCATION = 4,
-        ENGINEERING = 5
+        ENGINEERING = 4
     }
     
     [Serializable]

@@ -12,13 +12,15 @@ namespace ShopNameSpace
         public List<ItemEntry> ItemList { get; private set; }
         public List<ItemEntry> PerkList { get; private set; }
         private List<ItemData> _itemDataList;
+        private List<ItemData> _fixedItemDataList;
         private List<ItemData> _perkDataList;
         
         public event EventHandler<TryPurchaseEventArgs> RaiseTryPurchaseEvent;
 
-        public void Initialize(List<ItemData> itemDataList, List<ItemData> perkDataList, WalletManager walletManager)
+        public void Initialize(List<ItemData> itemDataList, List<ItemData> fixedItemDataList, List<ItemData> perkDataList, WalletManager walletManager)
         {
             _itemDataList = itemDataList;
+            _fixedItemDataList = fixedItemDataList;
             _perkDataList = perkDataList;
             
             ItemList = GenerateItemList();
@@ -30,8 +32,13 @@ namespace ShopNameSpace
         {
             List<ItemEntry> itemList = new List<ItemEntry>();
 
-            IEnumerable<ItemData> selected = _itemDataList.OrderBy(x => Guid.NewGuid()).Take(5);
-            // TODO: elaborate on the item selection logic
+            foreach (ItemData itemData in _fixedItemDataList)
+            {
+                itemList.Add(new ItemEntry(itemData));
+            }
+            
+            IEnumerable<ItemData> selected = _itemDataList.OrderBy(x => Guid.NewGuid()).Take(PersistentData.ItemSlots);
+            
             foreach (ItemData itemData in selected)
             {
                 itemList.Add(new ItemEntry(itemData));
@@ -43,7 +50,7 @@ namespace ShopNameSpace
         {
             List<ItemEntry> perkList = new List<ItemEntry>();
 
-            IEnumerable<ItemData> selected = _perkDataList.OrderBy(x => Guid.NewGuid()).Take(5);
+            IEnumerable<ItemData> selected = _perkDataList.OrderBy(x => Guid.NewGuid()).Take(PersistentData.PerkSlots);
 
             foreach (ItemData perkData in selected)
             {

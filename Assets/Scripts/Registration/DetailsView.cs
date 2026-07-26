@@ -41,7 +41,7 @@ namespace RegistrationNameSpace
             int totalCredits = _registrationManager.GetTotalCredits();
             int maxCredits = PersistentData.MaxCredits;
 
-            _detailsText.text = "total credits: " + totalCredits + " / " + "maximum credits: " + maxCredits;
+            _detailsText.text = "total credits: " + totalCredits + " / " + "maximum credits: " + maxCredits + " | goal: " + PersistentData.GetTargetPoints() + " points";
         }
     }
 }

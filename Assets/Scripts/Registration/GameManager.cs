@@ -45,7 +45,7 @@ namespace RegistrationNameSpace
             _registrationManager.Initialize(gameInfo, _timeManager);
             _timeManager.Initialize(gameInfo.TimeOffset, gameInfo.TargetTime);
             _pointsManager.Initialize(_registrationManager, _resultPopupView);
-            _sceneTransitionManager.Initialize(_pointsManager);
+            _sceneTransitionManager.Initialize(_pointsManager, _registrationManager, _clockView);
             
             _courseView.Initialize(gameInfo.CourseList, _registrationManager);
             _registrationView.Initialize(_registrationManager);
@@ -53,7 +53,7 @@ namespace RegistrationNameSpace
             _popupView.Initialize(_registrationManager);
             _clockView.Initialize(_timeManager);
             _finishRegistrationButtonView.Initialize(_sceneTransitionManager);
-            _resultPopupView.Initialize();
+            _resultPopupView.Initialize(_sceneTransitionManager);
         }
 
         private void Update()
@@ -64,8 +64,6 @@ namespace RegistrationNameSpace
         private GameInfo GenerateGameInfo()
         {
             List<Course> courseList = new List<Course>();
-            courseList.Add(new Course(0, "test1", 5, CourseType.ESSENTIAL_GE, DepartmentType.LIBERAL_ARTS, 10, 5, 5));
-            courseList.Add(new Course(0, "test2", 5, CourseType.ESSENTIAL_GE, DepartmentType.LIBERAL_ARTS, 10, 20, 5));
             return new GameInfo(courseList, 8 * 3600 + 30 * 60 - 10, 10, 21);
         }
     }

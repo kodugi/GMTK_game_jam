@@ -18,25 +18,25 @@ namespace RegistrationNameSpace
             switch (e.Result)
             {
                 case RegistrationResultType.SUCCESS:
-                    ShowMessage("registration success");
+                    ShowMessage("registration success!");
                     break;
                 case RegistrationResultType.FAILURE_BEFORE_START:
-                    ShowMessage("course registration has not started yet");
+                    ShowMessage("Course registration has not started yet.");
                     break;
                 case RegistrationResultType.FAILURE_QUOTA_EXCEEDED:
-                    ShowMessage("total quota exceeded");
+                    ShowMessage("Total quota exceeded.");
                     break;
                 case RegistrationResultType.FAILURE_MAXIMUM_CREDIT_EXCEEDED:
-                    ShowMessage("maximum credits exceeded");
+                    ShowMessage("Maximum credits exceeded.");
                     break;
                 case RegistrationResultType.FAILURE_COURSE_NOT_SELECTED:
-                    ShowMessage("please select a course");
+                    ShowMessage("Please select a course.");
                     break;
                 case RegistrationResultType.FAILURE_TIMETABLE_OVERLAP:
-                    ShowMessage("timetable overlap");
+                    ShowMessage("Selected course has overlapping schedule with registered ones.");
                     break;
                 case RegistrationResultType.FAILURE_COURSE_ID_OVERLAP:
-                    ShowMessage("course id overlap");
+                    ShowMessage("Selected course has overlapping course id with registered ones.");
                     break;
             }
         }

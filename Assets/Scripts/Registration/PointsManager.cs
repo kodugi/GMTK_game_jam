@@ -53,7 +53,7 @@ namespace RegistrationNameSpace
                         bool containsCourse = false;
                         foreach (Course takenCourse in PersistentData.TakenCourseList)
                         {
-                            if (prerequisite.courseData.courseID == takenCourse.CourseID)
+                            if (prerequisite.courseData.courseName.Equals(takenCourse.CourseName))
                             {
                                 containsCourse = true;
                             }
@@ -76,6 +76,7 @@ namespace RegistrationNameSpace
             result.ExtraPoint = coursePointsRecord.ExtraTotal;
             total += coursePointsRecord.ExtraTotal;
             result.Total = (int)total;
+            result.Success = result.Total >= PersistentData.GetTargetPoints();
             return result;
         }
     }

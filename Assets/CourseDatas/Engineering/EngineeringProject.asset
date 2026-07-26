@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3bd54e3d55d14c1ba32365223b71ce9d, type: 3}
+  m_Name: EngineeringProject
+  m_EditorClassIdentifier: Assembly-CSharp::CourseNameSpace.CourseData
+  courseName: Engineering Project
+  credits: 4
+  courseType: 2
+  department: 0
+  quota: 100
+  averageQuota: 110
+  stdQuota: 10
+  averageRating: 3
+  stdRating: 1.2
+  prerequisites:
+  - courseData: {fileID: 11400000, guid: 92e9a9849bc5a9244b5227f68535eee9, type: 2}
+    multiplier: 1.2
+  - courseData: {fileID: 11400000, guid: 10482bb3cccec6148bd7d08e9baac2ed, type: 2}
+    multiplier: 1.2
+  - courseData: {fileID: 11400000, guid: f4d1d255fb4daf34493248c8181da4bb, type: 2}
+    multiplier: 1.2
+  timetableType: 2

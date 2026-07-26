@@ -146,7 +146,7 @@ namespace RegistrationNameSpace
         {
             foreach (Course otherCourse in RegisteredCourses)
             {
-                if (course.CourseID == otherCourse.CourseID)
+                if (course.CourseName.Equals(otherCourse.CourseName))
                 {
                     return true;
                 }

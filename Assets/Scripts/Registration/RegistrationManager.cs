@@ -12,7 +12,7 @@ namespace RegistrationNameSpace
         private TimeManager _timeManager;
 
         private readonly double GAMMA = 0.1;
-        private readonly double MU = -1.0;
+        private readonly double MU = 0;
         private readonly double SIGMA = 0.4;
 
         public void Initialize(GameInfo gameInfo, TimeManager timeManager)

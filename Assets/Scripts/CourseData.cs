@@ -7,7 +7,6 @@ namespace CourseNameSpace
     [CreateAssetMenu(fileName = "CourseData", menuName = "ScriptableObjects/CourseData", order = 1)]
     public class CourseData: ScriptableObject
     {
-        public int courseID;
         public string courseName;
         public int credits;
         public CourseType courseType;

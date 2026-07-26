@@ -11,12 +11,16 @@ namespace RegistrationNameSpace
     {
         [SerializeField] protected TextMeshProUGUI _messageText;
         [SerializeField] protected Button _closeButton;
-
-        public virtual void Initialize()
+        [SerializeField] private TextMeshProUGUI _resultText;
+        
+        private SceneTransitionManager _sceneTransitionManager;
+        
+        public virtual void Initialize(SceneTransitionManager sceneTransitionManager)
         {
-            _closeButton.onClick.AddListener(() => SceneManager.LoadScene("Shop"));
             _messageText.text = "";
+            _resultText.text = "";
             _closeButton.gameObject.SetActive(false);
+            _sceneTransitionManager = sceneTransitionManager;
         }
 
         public void ShowResult(RegistrationResult result)
@@ -45,8 +49,30 @@ namespace RegistrationNameSpace
             yield return new WaitForSeconds(interval);
             _messageText.text += result.Total + " points\n";
             yield return new WaitForSeconds(interval);
-            
+
+            if (result.Success)
+            {
+                _messageText.text += "Semester Complete";
+                _closeButton.onClick.AddListener(() => HandleCloseButtonClick(true));
+            }
+            else
+            {
+                _messageText.text += "Game Over";
+                _closeButton.onClick.AddListener(() => HandleCloseButtonClick(false));
+            }
             _closeButton.gameObject.SetActive(true);
+        }
+
+        private void HandleCloseButtonClick(bool result)
+        {
+            if (result)
+            {
+                _sceneTransitionManager.NextRound();
+            }
+            else
+            {
+                _sceneTransitionManager.GameOver();
+            }
         }
     }
 }

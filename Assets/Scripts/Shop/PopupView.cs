@@ -14,13 +14,13 @@ namespace ShopNameSpace
         {
             if (e.Result == PurchaseResultType.FAILURE_NOT_ENOUGH_POINTS)
             {
-                ShowMessage("not enough points");
+                ShowMessage("You don't have enough points.");
                 return;
             }
 
             if (e.Result == PurchaseResultType.FAILURE_OUT_OF_STOCK)
             {
-                ShowMessage("selected item is out of stock");
+                ShowMessage("Selected item is sold out.");
             }
         }
     }
